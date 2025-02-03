@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import config from '../config/config';
 
 export interface AuthUser {
@@ -29,20 +29,20 @@ interface LoginResponse {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [user, setUser] = useState<AuthUser | null>(null);
-    const [token, setToken] = useState<string | null>(null);
-
-    useEffect(() => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
+        return !!(storedToken && storedUser);
+    });
 
-        if (storedToken && storedUser) {
-            setToken(storedToken);
-            setUser(JSON.parse(storedUser));
-            setIsAuthenticated(true);
-        }
-    }, []);
+    const [user, setUser] = useState<AuthUser | null>(() => {
+        const storedUser = localStorage.getItem('user');
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
+
+    const [token, setToken] = useState<string | null>(() => {
+        return localStorage.getItem('token');
+    });
 
     const login = async (email: string, password: string) => {
         try {
