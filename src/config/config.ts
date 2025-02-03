@@ -1,6 +1,5 @@
 const config = {
-    API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
-    // Aquí puedes agregar más configuraciones según necesites
+    API_URL: 'https://web-production-aea1.up.railway.app',
 };
 
 export default config; 
